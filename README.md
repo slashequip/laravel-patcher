@@ -1,11 +1,11 @@
-# This is my package laravel-patcher
+# Laravel Patchable 🩹
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/slashequip/laravel-patcher.svg?style=flat-square)](https://packagist.org/packages/slashequip/laravel-patcher)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/slashequip/laravel-patcher/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/slashequip/laravel-patcher/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/slashequip/laravel-patcher/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/slashequip/laravel-patcher/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/slashequip/laravel-patcher.svg?style=flat-square)](https://packagist.org/packages/slashequip/laravel-patcher)
 
-Laravel Patcher is an opinionated, declarative package to help simplify the building of PATCH routes.
+Laravel Patchable is an opinionated, declarative package to help simplify the building of PATCH routes.
 
 It abstracts the boiler plate needed to validate and update individual Model attributes based on the request.
 
@@ -14,7 +14,7 @@ It abstracts the boiler plate needed to validate and update individual Model att
 You can install the package via composer:
 
 ```bash
-composer require slashequip/laravel-patcher
+composer require slashequip/laravel-patchable
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ composer require slashequip/laravel-patcher
 Your Model's can be made patchable by add the trait of the same name.
 
 ```php
-use SlashEquip\Patcher\Traits\Patchable;
+use SlashEquip\Patchable\Traits\Patchable;
 
 class Property extends Model
 {
@@ -88,7 +88,7 @@ class Property extends Model
 ```
 
 ```php
-use SlashEquip\Patcher\Contracts\Patch;
+use SlashEquip\Patchable\Contracts\Patch;
 
 class PropertyNamePatch implements Patch
 {
@@ -115,6 +115,8 @@ class PropertyNamePatch implements Patch
 If you want to handle patching with a more manual approach, you can use the Patcher class directly.
 
 ```php
+use SlashEquip\Patchable\Patcher;
+
 class UpdatePropertyController
 {
     public function __invoke(Property $property)

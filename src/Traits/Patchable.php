@@ -1,12 +1,13 @@
 <?php
 
-namespace SlashEquip\Patcher\Traits;
+namespace SlashEquip\Patchable\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use SlashEquip\Patcher\Patcher;
+use SlashEquip\Patchable\Patcher;
 
 /**
  * @mixin Model
+ *
  * @phpstan-ignore trait.unused
  */
 trait Patchable

@@ -1,11 +1,11 @@
 <?php
 
-namespace SlashEquip\Patcher;
+namespace SlashEquip\Patchable;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
-use SlashEquip\Patcher\Contracts\Patch;
-use SlashEquip\Patcher\Exceptions\InvalidPatchDefinitionException;
+use SlashEquip\Patchable\Contracts\Patch;
+use SlashEquip\Patchable\Exceptions\InvalidPatchDefinitionException;
 
 class Patcher
 {
@@ -71,7 +71,7 @@ class Patcher
             if (! class_exists($value)) {
                 return [$key => new DumbPatch(explode('|', $value))];
             }
-    
+
             if (is_subclass_of($value, Patch::class)) {
                 return [$key => resolve($value)];
             }

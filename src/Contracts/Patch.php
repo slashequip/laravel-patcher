@@ -1,6 +1,6 @@
 <?php
 
-namespace SlashEquip\Patcher\Contracts;
+namespace SlashEquip\Patchable\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 

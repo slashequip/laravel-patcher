@@ -1,6 +1,6 @@
 <?php
 
-namespace SlashEquip\Patcher\Tests;
+namespace SlashEquip\Patchable\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
 

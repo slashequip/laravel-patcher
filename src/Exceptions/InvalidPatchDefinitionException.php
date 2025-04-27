@@ -1,6 +1,6 @@
 <?php
 
-namespace SlashEquip\Patcher\Exceptions;
+namespace SlashEquip\Patchable\Exceptions;
 
 use Exception;
 

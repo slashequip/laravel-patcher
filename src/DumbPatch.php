@@ -1,9 +1,9 @@
 <?php
 
-namespace SlashEquip\Patcher;
+namespace SlashEquip\Patchable;
 
 use Illuminate\Database\Eloquent\Model;
-use SlashEquip\Patcher\Contracts\Patch;
+use SlashEquip\Patchable\Contracts\Patch;
 
 class DumbPatch implements Patch
 {

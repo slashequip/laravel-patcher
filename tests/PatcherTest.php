@@ -3,8 +3,8 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use SlashEquip\Patcher\Contracts\Patch;
-use SlashEquip\Patcher\Patcher;
+use SlashEquip\Patchable\Contracts\Patch;
+use SlashEquip\Patchable\Patcher;
 
 // Set up a test model for our tests
 class TestModel extends Model
@@ -50,7 +50,7 @@ class UnauthorizedPatch implements Patch
 // Custom model class for trait testing
 class PatchableTestModel extends Model
 {
-    use \SlashEquip\Patcher\Traits\Patchable;
+    use \SlashEquip\Patchable\Traits\Patchable;
 
     protected $guarded = [];
 

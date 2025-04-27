@@ -1,12 +1,12 @@
 {
-    "name": "slashequip/laravel-patcher",
+    "name": "slashequip/laravel-patchable",
     "description": "Laraval package to add a more declarative way to handle PATCH endpoints.",
     "keywords": [
         "slashequip",
         "laravel",
-        "laravel-patcher"
+        "laravel-patchable"
     ],
-    "homepage": "https://github.com/slashequip/laravel-patcher",
+    "homepage": "https://github.com/slashequip/laravel-patchable",
     "license": "MIT",
     "authors": [
         {
@@ -33,13 +33,12 @@
     },
     "autoload": {
         "psr-4": {
-            "SlashEquip\\Patcher\\": "src/"
+            "SlashEquip\\Patchable\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SlashEquip\\Patcher\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "SlashEquip\\Patchable\\Tests\\": "tests/"
         }
     },
     "scripts": {
