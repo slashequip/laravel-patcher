@@ -7,6 +7,7 @@ use SlashEquip\Patcher\Patcher;
 
 /**
  * @mixin Model
+ *
  * @phpstan-ignore trait.unused
  */
 trait Patchable

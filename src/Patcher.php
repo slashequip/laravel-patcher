@@ -71,7 +71,7 @@ class Patcher
             if (! class_exists($value)) {
                 return [$key => new DumbPatch(explode('|', $value))];
             }
-    
+
             if (is_subclass_of($value, Patch::class)) {
                 return [$key => resolve($value)];
             }
