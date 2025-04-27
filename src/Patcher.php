@@ -11,12 +11,12 @@ class Patcher
 {
     public static function patch(Model $model, array $patchable, array $attributes): self
     {
-        return new static($model, $patchable, $attributes);
+        return new self($model, $patchable, $attributes);
     }
 
     public static function patchAndSave(Model $model, array $patchable, array $attributes): bool
     {
-        return (new static($model, $patchable, $attributes))
+        return (new self($model, $patchable, $attributes))
             ->apply(fn (Model $model) => $model->save());
     }
 
@@ -67,12 +67,14 @@ class Patcher
             return [$key => new DumbPatch($value)];
         }
 
-        if (is_string($value) && ! class_exists($value)) {
-            return [$key => new DumbPatch(explode('|', $value))];
-        }
-
-        if (is_string($value) && class_exists($value) && is_subclass_of($value, Patch::class)) {
-            return [$key => resolve($value)];
+        if (is_string($value)) {
+            if (! class_exists($value)) {
+                return [$key => new DumbPatch(explode('|', $value))];
+            }
+    
+            if (is_subclass_of($value, Patch::class)) {
+                return [$key => resolve($value)];
+            }
         }
 
         throw InvalidPatchDefinitionException::fromValue($value);
