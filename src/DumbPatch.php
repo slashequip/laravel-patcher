@@ -9,7 +9,7 @@ class DumbPatch implements Patch
 {
     public function __construct(
         public readonly array $rules,
-    ) {}    
+    ) {}
 
     public function authorize(Model $model): bool
     {

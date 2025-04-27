@@ -1,12 +1,9 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use SlashEquip\Patcher\Contracts\Patch;
-use SlashEquip\Patcher\Exceptions\InvalidPatchDefinitionException;
 use SlashEquip\Patcher\Patcher;
 
 // Set up a test model for our tests
@@ -47,20 +44,18 @@ class UnauthorizedPatch implements Patch
         return [];
     }
 
-    public function patch(Model $model, string $key, $value): void
-    {
-    }
+    public function patch(Model $model, string $key, $value): void {}
 }
 
 // Custom model class for trait testing
 class PatchableTestModel extends Model
 {
     use \SlashEquip\Patcher\Traits\Patchable;
-    
+
     protected $guarded = [];
-    
+
     public $patchable = ['name'];
-    
+
     // Prevent database interaction
     public function save(array $options = [])
     {
@@ -72,13 +67,13 @@ class PatchableTestModel extends Model
 it('can patch with simple attribute names', function () {
     $model = new TestModel(['name' => 'Old Name']);
     $attributes = ['name' => 'New Name'];
-    
+
     Patcher::patch(
         model: $model,
         patchable: ['name'],
         attributes: $attributes
     )->apply();
-    
+
     expect($model->name)->toBe('New Name');
 });
 
@@ -86,13 +81,13 @@ it('can patch with simple attribute names', function () {
 it('can patch with string validation rules', function () {
     $model = new TestModel(['name' => 'Old Name']);
     $attributes = ['name' => 'New Name'];
-    
+
     Patcher::patch(
         model: $model,
         patchable: ['name' => 'required|string|max:255'],
         attributes: $attributes
     )->apply();
-    
+
     expect($model->name)->toBe('New Name');
 });
 
@@ -100,13 +95,13 @@ it('can patch with string validation rules', function () {
 it('throws validation exception with invalid string rules', function () {
     $model = new TestModel(['name' => 'Old Name']);
     $attributes = ['name' => ''];
-    
+
     expect(fn () => Patcher::patch(
         model: $model,
         patchable: ['name' => 'required|string'],
         attributes: $attributes
     )->apply())->toThrow(ValidationException::class);
-    
+
     expect($model->name)->toBe('Old Name');
 });
 
@@ -114,13 +109,13 @@ it('throws validation exception with invalid string rules', function () {
 it('can patch with array validation rules', function () {
     $model = new TestModel(['age' => 20]);
     $attributes = ['age' => 25];
-    
+
     Patcher::patch(
         model: $model,
         patchable: ['age' => ['required', 'integer', 'min:18']],
         attributes: $attributes
     )->apply();
-    
+
     expect($model->age)->toBe(25);
 });
 
@@ -128,13 +123,13 @@ it('can patch with array validation rules', function () {
 it('can patch with custom patch classes', function () {
     $model = new TestModel(['name' => 'lowercase']);
     $attributes = ['name' => 'should be uppercase'];
-    
+
     Patcher::patch(
         model: $model,
         patchable: ['name' => TestPatch::class],
         attributes: $attributes
     )->apply();
-    
+
     expect($model->name)->toBe('SHOULD BE UPPERCASE');
 });
 
@@ -142,13 +137,13 @@ it('can patch with custom patch classes', function () {
 it('skips attributes not in request', function () {
     $model = new TestModel(['name' => 'Original', 'age' => 20]);
     $attributes = ['name' => 'New Name']; // age not included
-    
+
     Patcher::patch(
         model: $model,
         patchable: ['name', 'age'],
         attributes: $attributes
     )->apply();
-    
+
     expect($model->name)->toBe('New Name');
     expect($model->age)->toBe(20); // unchanged
 });
@@ -157,9 +152,9 @@ it('skips attributes not in request', function () {
 it('aborts when patch is not authorized', function () {
     $model = new TestModel(['name' => 'Original']);
     $attributes = ['name' => 'New Name'];
-    
+
     $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
-    
+
     Patcher::patch(
         model: $model,
         patchable: ['name' => UnauthorizedPatch::class],
@@ -171,7 +166,7 @@ it('aborts when patch is not authorized', function () {
 it('validates all attributes before patching', function () {
     $model = new TestModel(['name' => 'Original', 'age' => 20]);
     $attributes = ['name' => '', 'age' => 25]; // name is invalid
-    
+
     expect(fn () => Patcher::patch(
         model: $model,
         patchable: [
@@ -180,7 +175,7 @@ it('validates all attributes before patching', function () {
         ],
         attributes: $attributes
     )->apply())->toThrow(ValidationException::class);
-    
+
     // Neither attribute should be updated
     expect($model->name)->toBe('Original');
     expect($model->age)->toBe(20);
@@ -190,15 +185,15 @@ it('validates all attributes before patching', function () {
 it('saves model after patching when using patch_and_save', function () {
     $model = $this->createPartialMock(TestModel::class, ['save']);
     $model->expects($this->once())->method('save')->willReturn(true);
-    
+
     $attributes = ['name' => 'New Name'];
-    
+
     $result = Patcher::patchAndSave(
         model: $model,
         patchable: ['name'],
         attributes: $attributes
     );
-    
+
     expect($result)->toBeTrue();
 });
 
@@ -207,28 +202,29 @@ it('applies callback after patching', function () {
     $model = new TestModel(['name' => 'Original']);
     $attributes = ['name' => 'New Name'];
     $callbackRan = false;
-    
+
     $result = Patcher::patch(
         model: $model,
         patchable: ['name'],
         attributes: $attributes
     )->apply(function ($patchedModel) use (&$callbackRan) {
         $callbackRan = true;
+
         return 'callback result';
     });
-    
+
     expect($callbackRan)->toBeTrue();
     expect($result)->toBe('callback result');
 });
 
 // Invalid patch definition
 it('throws exception for invalid patch definition', function () {
-    $model = new TestModel();
+    $model = new TestModel;
     $attributes = ['name' => 'New Name'];
-    
+
     expect(fn () => Patcher::patch(
         model: $model,
-        patchable: ['name' => new \stdClass()], // Invalid definition
+        patchable: ['name' => new \stdClass], // Invalid definition
         attributes: $attributes
     )->apply())->toThrow(\Error::class);
 });
@@ -239,19 +235,19 @@ it('allows multiple attributes to be patched simultaneously', function () {
     $attributes = [
         'name' => 'New Name',
         'age' => 25,
-        'email' => 'new@example.com'
+        'email' => 'new@example.com',
     ];
-    
+
     Patcher::patch(
         model: $model,
         patchable: [
             'name' => 'required|string',
             'age' => ['required', 'integer'],
-            'email' => 'required|email'
+            'email' => 'required|email',
         ],
         attributes: $attributes
     )->apply();
-    
+
     expect($model->name)->toBe('New Name');
     expect($model->age)->toBe(25);
     expect($model->email)->toBe('new@example.com');
@@ -261,14 +257,14 @@ it('allows multiple attributes to be patched simultaneously', function () {
 it('works with trait on model', function () {
     // Create and configure the test model
     $model = new PatchableTestModel(['name' => 'Original']);
-    
+
     // Test the update directly using the Patcher class
     Patcher::patchAndSave(
         model: $model,
         patchable: ['name'],
         attributes: ['name' => 'New Name']
     );
-    
+
     // Assert model was updated
     expect($model->name)->toBe('New Name');
 });

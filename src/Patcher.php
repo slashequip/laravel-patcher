@@ -2,10 +2,11 @@
 
 namespace SlashEquip\Patcher;
 
-use Illuminate\Database\Eloquent\Model;
 use Closure;
-use SlashEquip\Patcher\Exceptions\InvalidPatchDefinitionException;
+use Illuminate\Database\Eloquent\Model;
 use SlashEquip\Patcher\Contracts\Patch;
+use SlashEquip\Patcher\Exceptions\InvalidPatchDefinitionException;
+
 class Patcher
 {
     public static function patch(Model $model, array $patchable, array $attributes): self
@@ -35,7 +36,7 @@ class Patcher
         // Authorize relevant patches.
         $patchable
             ->each(function (Patch $patch, $key) {
-                if (!$patch->authorize($this->model)) {
+                if (! $patch->authorize($this->model)) {
                     abort(403);
                 }
             });
@@ -66,7 +67,7 @@ class Patcher
             return [$key => new DumbPatch($value)];
         }
 
-        if (is_string($value) && !class_exists($value)) {
+        if (is_string($value) && ! class_exists($value)) {
             return [$key => new DumbPatch(explode('|', $value))];
         }
 
